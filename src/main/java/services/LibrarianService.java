@@ -6,6 +6,7 @@ import entities.User;
 import repositories.LibrarianRepository;
 
 import java.lang.reflect.Field;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,37 +18,41 @@ public class LibrarianService implements EntityService<Librarian> {
         this.librarianRepository = new LibrarianRepository();
         this.userService = new UserService();
     }
-    public boolean exists(Librarian librarian){
-        if (librarian != null) return true;
-        else throw new IllegalArgumentException("Librarian does not exist.");
-    }
-
-    public User getUserByLibrarian(Librarian librarian){
-        return librarian.getUser();
-    }
-
     @Override
     public void create(Librarian librarian) {
         User user = userService.getById(librarian.getUser().getId());
-        if(userService.exists(user) && !assignedToAnotherLibrarian(user.getId())) librarianRepository.create(librarian);
+        if(hasCorrectDate(librarian.getEmploymentDate()) && userService.exists(user) && !assignedToAnotherLibrarian(user.getId())) librarianRepository.create(librarian);
     }
-    public boolean assignedToAnotherLibrarian(int userId){
+    private boolean exists(Librarian librarian){
+        if (librarian != null) return true;
+        else throw new IllegalArgumentException("Librarian does not exist.");
+    }
+    private boolean hasCorrectDate(Date employmentDate){
+        Date currentDate = new Date(System.currentTimeMillis());
+        if (employmentDate.after(currentDate)) {
+            throw new IllegalArgumentException("Employment date cannot be in the future.");
+        }
+        return true;
+    }
+    private boolean assignedToAnotherLibrarian(int userId){
         if(getAll().stream().anyMatch(l -> l.getUser().getId() == userId))
             throw new IllegalArgumentException("User is already assigned to librarian");
         return false;
     }
-
+    @Override
+    public void update(Librarian librarian) {
+        if(exists(librarian) && hasCorrectDate(librarian.getEmploymentDate())) librarianRepository.update(librarian);
+    }
     @Override
     public void delete(int id) {
         Librarian librarian = getById(id);
-        if (exists(librarian)) librarianRepository.delete(librarian);
+        if (exists(librarian)) {
+            if (getAll().size() <= 1) {
+                throw new IllegalArgumentException("Cannot delete the only librarian in the system.");
+            }
+            librarianRepository.delete(librarian);
+        }
     }
-
-    @Override
-    public void update(Librarian librarian) {
-        if(exists(librarian)) librarianRepository.update(librarian);
-    }
-
     @Override
     public List<Librarian> getAll() {
         List<Librarian> librarians = librarianRepository.getAll();
@@ -57,10 +62,8 @@ public class LibrarianService implements EntityService<Librarian> {
 
     @Override
     public User getReference(Field field, int id) {
-        if (field.getType() == User.class){
-            User user = userService.getById(id);
-            return user;
-        }
+        if (field.getType() == User.class)
+            return userService.getById(id);
         return null;
     }
 

@@ -35,8 +35,8 @@ public class CopyRepository extends EntityRepository<Copy> {
     }
     public Copy getCopyByNumber(int copyNumber){
         TypedQuery<Copy> query = entityManager.createQuery(
-                "SELECT c FROM Copy c WHERE c.copyNumber = :copyNumber", Copy.class);
-        query.setParameter("copyNumber", copyNumber);
+                "SELECT c FROM Copy c WHERE c.copyNumber = :copyNumber", Copy.class)
+                .setParameter("copyNumber", copyNumber);
         return query.getResultStream().findFirst().orElse(null);
     }
 }

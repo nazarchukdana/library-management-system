@@ -16,10 +16,6 @@ public class LoginDialog {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(LoginDialog::showLoginDialog);
-        EntityManager entityManager = Persistence.createEntityManagerFactory("LibraryManagement").createEntityManager();
-        TypedQuery<User> query = entityManager.createQuery("SELECT u FROM User u WHERE size(u.borrowings) >= 1 ", User.class);
-
-        System.out.println(query.getResultList());
 
     }
     private static void showLoginDialog() {

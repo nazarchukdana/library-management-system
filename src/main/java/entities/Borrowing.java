@@ -41,7 +41,6 @@ public class Borrowing {
         this.borrowDate = borrowDate;
         this.returnDate = returnDate;
     }
-    // Getters and Setters
 
     public Integer getId() {
         return id;

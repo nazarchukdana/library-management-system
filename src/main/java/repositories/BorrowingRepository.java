@@ -33,12 +33,12 @@ public class BorrowingRepository extends EntityRepository<Borrowing> {
         super.delete(entity);
     }
     public boolean existsByUserAndBookAndActive(int userId, int bookId) {
-        String query = "SELECT b FROM Borrowing b WHERE b.user.id = :userId AND b.copy.book.id = :bookId AND b.returnDate IS NULL";
-        List<?> result = entityManager.createQuery(query)
+        List<Borrowing> result = entityManager.createQuery("SELECT b FROM Borrowing b " +
+                        "WHERE b.user.id = :userId AND b.copy.book.id = :bookId AND b.returnDate IS NULL",
+                        Borrowing.class)
                 .setParameter("userId", userId)
                 .setParameter("bookId", bookId)
                 .getResultList();
-        System.out.println(result);
         if(result != null)
             return !result.isEmpty();
         return false;

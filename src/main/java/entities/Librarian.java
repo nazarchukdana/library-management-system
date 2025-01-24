@@ -21,7 +21,6 @@ public class Librarian {
     @Column(nullable = false, length = 100)
     private String position;
 
-    // Default constructor
     public Librarian() {
     }
 

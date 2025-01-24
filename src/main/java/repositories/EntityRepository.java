@@ -31,7 +31,6 @@ public abstract class EntityRepository<T> {
             transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
-            e.printStackTrace();
         }
     }
 
@@ -43,7 +42,6 @@ public abstract class EntityRepository<T> {
             transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
-            e.printStackTrace();
         }
     }
 
@@ -55,7 +53,6 @@ public abstract class EntityRepository<T> {
             transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
-            e.printStackTrace();
         }
     }
 }

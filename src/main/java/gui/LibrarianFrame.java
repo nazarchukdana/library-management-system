@@ -149,7 +149,6 @@ public class LibrarianFrame extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 activeEntity = "Librarian";
                 currentEntityService = new LibrarianService();
-                System.out.println(currentEntityService);
                 showLibrarians();
             }
             @Override
@@ -418,6 +417,7 @@ public class LibrarianFrame extends JFrame {
 
         Field[] fields = Arrays.stream(entityClass.getDeclaredFields())
                 .filter(field -> field.isAnnotationPresent(Column.class) || field.isAnnotationPresent(JoinColumn.class))
+                .filter(field -> !field.getName().equals("status"))
                 .toArray(Field[]::new);
 
         JPanel formPanel = new JPanel();
@@ -502,6 +502,15 @@ public class LibrarianFrame extends JFrame {
                             else throw new IllegalArgumentException("Fields cannot be empty");
                         }
                     }
+                }
+                //set status
+                try {
+                    Field statusField = entityClass.getDeclaredField("status");
+                    if (statusField != null) {
+                        statusField.setAccessible(true);
+                        statusField.set(newEntity, "Available");
+                    }
+                } catch (NoSuchFieldException ignored) {
                 }
                 currentEntityService.create(newEntity);
                 dialog.dispose();

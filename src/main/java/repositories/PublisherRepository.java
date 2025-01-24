@@ -12,8 +12,8 @@ public class PublisherRepository extends EntityRepository<Publisher> {
     }
     public Publisher getPublisherByName(String name){
         TypedQuery<Publisher> query = entityManager.createQuery(
-                "SELECT p FROM Publisher p WHERE p.name = :name", Publisher.class);
-        query.setParameter("name", name);
+                "SELECT p FROM Publisher p WHERE p.name = :name", Publisher.class)
+                .setParameter("name", name);
         return query.getResultStream().findFirst().orElse(null);
     }
 

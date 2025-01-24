@@ -104,12 +104,6 @@ public class User {
     public void setBorrowings(List<Borrowing> borrowings) {
         this.borrowings = borrowings;
     }
-    public List<Borrowing> getActiveBorrowings() {
-        return borrowings.stream()
-                .filter(Borrowing::isActive)
-                .toList();
-    }
-
     @Override
     public String toString() {
         return "User{" +

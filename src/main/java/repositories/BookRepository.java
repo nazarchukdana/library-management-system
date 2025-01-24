@@ -37,8 +37,8 @@ public class BookRepository extends EntityRepository<Book> {
     }
     public Book getBookByISBN(String isbn){
         TypedQuery<Book> query = entityManager.createQuery(
-                "SELECT b FROM Book b WHERE b.isbn = :isbn", Book.class);
-        query.setParameter("isbn", isbn);
+                "SELECT b FROM Book b WHERE b.isbn = :isbn", Book.class).
+                setParameter("isbn", isbn);
         return query.getResultStream().findFirst().orElse(null);
     }
 }

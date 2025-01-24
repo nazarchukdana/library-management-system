@@ -1,7 +1,6 @@
 package entities;
 
 import jakarta.persistence.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,11 +30,9 @@ public class Book {
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Copy> copies = new ArrayList<>();
 
-    // Default constructor
     public Book() {
     }
 
-    // Constructor with fields
     public Book(String title, String author, Publisher publisher, int publicationYear, String isbn) {
         this.title = title;
         this.author = author;
@@ -44,7 +41,6 @@ public class Book {
         this.isbn = isbn;
     }
 
-    // Getters and setters
     public int getId() {
         return id;
     }
@@ -99,18 +95,6 @@ public class Book {
 
     public void setCopies(List<Copy> copies) {
         this.copies = copies;
-    }
-
-    // Convenience method to add a copy
-    public void addCopy(Copy copy) {
-        copies.add(copy);
-        copy.setBook(this);
-    }
-
-    // Convenience method to remove a copy
-    public void removeCopy(Copy copy) {
-        copies.remove(copy);
-        copy.setBook(null);
     }
 
     @Override

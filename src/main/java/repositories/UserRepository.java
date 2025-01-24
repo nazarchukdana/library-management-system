@@ -11,8 +11,8 @@ public class UserRepository extends EntityRepository<User> {
     }
     public User getUserByEmail(String email) {
         TypedQuery<User> query = entityManager.createQuery(
-                "SELECT u FROM User u WHERE u.email = :email", User.class);
-        query.setParameter("email", email);
+                "SELECT u FROM User u WHERE u.email = :email", User.class)
+                .setParameter("email", email);
         return query.getResultStream().findFirst().orElse(null);
     }
 

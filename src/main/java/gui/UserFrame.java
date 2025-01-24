@@ -24,7 +24,6 @@ public class UserFrame extends JFrame {
     private EntityService currentEntityService;
     private final int id;
 
-
     public UserFrame(int id) {
         this.id = id;
         setTitle("User");
@@ -32,7 +31,6 @@ public class UserFrame extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         createUI();
-
         setVisible(true);
     }
 

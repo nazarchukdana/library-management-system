@@ -17,12 +17,32 @@ public class PublisherService implements EntityService<Publisher> {
 
     @Override
     public void create(Publisher publisher) {
-        if(!existsPublisherWithName(publisher.getName())) publisherRepository.create(publisher);
+        if(!existsPublisherWithName(publisher.getName()) && hasCorrectPhoneNumber(publisher.getPhoneNumber())) publisherRepository.create(publisher);
     }
-    public boolean existsPublisherWithName(String name){
+    private boolean existsPublisherWithName(String name){
         if(publisherRepository.getPublisherByName(name) != null){
             throw new IllegalArgumentException("The publisher with this name already exists");
         }
+        return false;
+    }
+    private boolean hasCorrectPhoneNumber(String phoneNumber){
+        String phoneNumberPattern = "\\+48 \\d{3}-\\d{3}-\\d{3}";
+        if (!phoneNumber.matches(phoneNumberPattern)) {
+            throw new IllegalArgumentException("Invalid phone number format. The correct format is: +48 XXX-XXX-XXX");
+        }
+        return true;
+    }
+    @Override
+    public void update(Publisher publisher) {
+        if (exists(publisher) && hasCorrectPhoneNumber(publisher.getPhoneNumber())) publisherRepository.update(publisher);
+    }
+    @Override
+    public void delete(int id) {
+        Publisher publisher = getById(id);
+        if (exists(publisher) && !hasBooks(publisher)) publisherRepository.delete(publisher);
+    }
+    private boolean hasBooks(Publisher publisher){
+        if(!publisher.getBooks().isEmpty()) throw new IllegalArgumentException("The publisher is assigned to the books");
         return false;
     }
     public List<Publisher> getAll() {
@@ -46,20 +66,5 @@ public class PublisherService implements EntityService<Publisher> {
     public boolean exists(Publisher publisher) {
         if (publisher != null) return true;
         else throw new IllegalArgumentException("Publisher does not exist.");
-    }
-
-    @Override
-    public void update(Publisher publisher) {
-        if (exists(publisher)) publisherRepository.update(publisher);
-    }
-
-    @Override
-    public void delete(int id) {
-        Publisher publisher = getById(id);
-        if (exists(publisher) && !hasBooks(publisher)) publisherRepository.delete(publisher);
-    }
-    private boolean hasBooks(Publisher publisher){
-        if(!publisher.getBooks().isEmpty()) throw new IllegalArgumentException("The publisher is assigned to the books");
-        return false;
     }
 }

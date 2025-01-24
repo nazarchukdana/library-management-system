@@ -29,13 +29,16 @@ public class CopyService implements EntityService<Copy> {
         return false;
     }
     @Override
+    public void update(Copy copy) {
+        if (exists(copy)) copyRepository.update(copy);
+    }
+    @Override
     public void delete(int id) {
         Copy copy = getById(id);
         if (exists(copy) && !hasActiveBorrowings(copy)) copyRepository.delete(copy);
     }
-    public boolean hasActiveBorrowings(Copy copy) {
-        List<Borrowing> borrowings = copy.getBorrowings();
-        if(borrowings != null && borrowings.stream().anyMatch(Borrowing::isActive)) throw new IllegalArgumentException("There are active borrowings");
+    private boolean hasActiveBorrowings(Copy copy) {
+        if(copy.getStatus().equals("Borrowed")) throw new IllegalArgumentException("There are active borrowings");
         return false;
 
     }
@@ -47,10 +50,7 @@ public class CopyService implements EntityService<Copy> {
         if (copy != null) return true;
         else throw new IllegalArgumentException("Copy does not exist.");
     }
-    @Override
-    public void update(Copy copy) {
-        if (exists(copy)) copyRepository.update(copy);
-    }
+
 
     @Override
     public List<Copy> getAll() {
@@ -68,10 +68,7 @@ public class CopyService implements EntityService<Copy> {
     }
     @Override
     public Book getReference(Field field, int id) {
-        if (field.getType() == Book.class) {
-            Book book = bookService.getById(id);
-            System.out.println(book);
-            return book;
-        } return null;
+        if (field.getType() == Book.class) return bookService.getById(id);
+        return null;
     }
 }

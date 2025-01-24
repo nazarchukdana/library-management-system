@@ -5,6 +5,7 @@ import entities.Publisher;
 import repositories.BookRepository;
 
 import java.lang.reflect.Field;
+import java.time.Year;
 import java.util.List;
 
 public class BookService implements EntityService<Book> {
@@ -19,13 +20,39 @@ public class BookService implements EntityService<Book> {
     @Override
     public void create(Book book) {
         Publisher publisher = publisherService.getById(book.getPublisher().getId());
-        if(publisherService.exists(publisher) && !existsBookWithISBN(book.getIsbn())) bookRepository.create(book);
+        if(ISBNHasCorrectFormat(book.getIsbn()) &&
+                hasCorrectYear(book.getPublicationYear()) &&
+                publisherService.exists(publisher) &&
+                !existsBookWithISBN(book.getIsbn())) bookRepository.create(book);
 
     }
-    public boolean existsBookWithISBN(String isbn){
+    private boolean ISBNHasCorrectFormat(String isbn){
+        if (isbn == null || !isbn.matches("\\d{13}")) {
+            throw new IllegalArgumentException("ISBN must be exactly 13 digits and contain only numbers.");
+        }
+        return true;
+    }
+    private boolean hasCorrectYear(int publicationYear){
+        int currentYear = Year.now().getValue();
+        if (publicationYear > currentYear) {
+            throw new IllegalArgumentException("Publication year cannot exceed the current year.");
+        }
+        return true;
+    }
+    private boolean existsBookWithISBN(String isbn){
         if (bookRepository.getBookByISBN(isbn) != null)
             throw new IllegalArgumentException("A book with this ISBN already exists");
         return false;
+    }
+    public boolean exists(Book book){
+        if (book == null) throw new IllegalArgumentException("Book does not exist.");
+        return true;
+    }
+    @Override
+    public void update(Book book) {
+        if (exists(book) && hasCorrectYear(book.getPublicationYear())) {
+            bookRepository.update(book);
+        }
     }
 
     @Override
@@ -37,18 +64,6 @@ public class BookService implements EntityService<Book> {
         if(!book.getCopies().isEmpty()) throw new IllegalArgumentException("You cannot delete this book. Delete copies first");
         return false;
     }
-    public boolean exists(Book book){
-        if (book == null) throw new IllegalArgumentException("Book does not exist.");
-        return true;
-    }
-
-    @Override
-    public void update(Book book) {
-        if (exists(book)) {
-            bookRepository.update(book);
-        }
-    }
-
     @Override
     public List<Book> getAll() {
         return bookRepository.getAll();
@@ -61,9 +76,7 @@ public class BookService implements EntityService<Book> {
 
     @Override
     public Publisher getReference(Field field, int id) {
-        if (field.getType() == Publisher.class){
-            return publisherService.getById(id);
-        }
+        if (field.getType() == Publisher.class) return publisherService.getById(id);
         else return null;
     }
 }

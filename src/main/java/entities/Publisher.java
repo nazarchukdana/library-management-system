@@ -24,18 +24,15 @@ public class Publisher {
     @OneToMany(mappedBy = "publisher", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Book> books = new ArrayList<>();
 
-    // Default constructor
     public Publisher() {
     }
 
-    // Constructor with fields
     public Publisher(String name, String address, String phoneNumber) {
         this.name = name;
         this.address = address;
         this.phoneNumber = phoneNumber;
     }
 
-    // Getters and setters
     public int getId() {
         return id;
     }
@@ -74,18 +71,6 @@ public class Publisher {
 
     public void setBooks(List<Book> books) {
         this.books = books;
-    }
-
-    // Convenience method to add a book
-    public void addBook(Book book) {
-        books.add(book);
-        book.setPublisher(this);
-    }
-
-    // Convenience method to remove a book
-    public void removeBook(Book book) {
-        books.remove(book);
-        book.setPublisher(null);
     }
 
     @Override
