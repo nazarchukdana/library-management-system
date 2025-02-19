@@ -87,22 +87,13 @@ The system supports full CRUD functionality:
 - **JPA & Hibernate** (ORM and Database Integration)
 - **Maven/Gradle** (Build Management)
 
-## Setup Instructions
-1. Clone the repository:
-   ```sh
-   git clone https://github.com/nazarchukdana/library-management-system.git
-   ```
-2. Import the project into an IDE.
-3. Configure the database in `persistence.xml`.
-4. Build the project using Maven or Gradle.
-5. Run the application.
-
 ## Future Enhancements
 - Integrate search and filtering features for book listings.
 - Intergrate utit tests for the whole system.
 
 ## License
-This project is licensed under the MIT License.
+This project is **proprietary and closed-source**.  
+Unauthorized use, distribution, or modification is **strictly prohibited**. 
 
 ## Contributors
 - **Dana Nazarchuk** – Developer
